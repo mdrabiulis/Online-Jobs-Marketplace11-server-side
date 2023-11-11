@@ -5,7 +5,7 @@ const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
-console.log(process.env.NAME_KEY);
+
 app.use(cors());
 app.use(express.json());
 
@@ -41,7 +41,18 @@ async function run() {
       const cursor = allAddjob.find();
       const result = await cursor.toArray();
       res.send(result);
-      console.log(result);
+      // console.log(result);
+    });
+
+    app.get("/alljobs", async (req, res) => {
+      console.log(req.query);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await allAddjob.find(query).toArray();
+      res.send(result);
+      
     });
 
 
