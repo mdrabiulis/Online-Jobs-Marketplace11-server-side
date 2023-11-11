@@ -37,7 +37,12 @@ async function run() {
 
     })
 
-
+    app.get("/alljob", async (req, res) => {
+      const cursor = allAddjob.find();
+      const result = await cursor.toArray();
+      res.send(result);
+      console.log(result);
+    });
 
 
 
