@@ -33,7 +33,7 @@ async function run() {
       const AddjobData = req.body;
       const result = await allAddjob.insertOne(AddjobData);
       res.send(result);
-      console.log(AddjobData);
+      // console.log(AddjobData);
 
     })
 
