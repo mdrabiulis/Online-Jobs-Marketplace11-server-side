@@ -5,12 +5,10 @@ const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
-
 app.use(cors());
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.NAME}:${process.env.NAME_KEY}@cluster0.wvvqbv9.mongodb.net/?retryWrites=true&w=majority`;
-
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -22,29 +20,43 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    
-
     const allAddjob = client.db("Addjob").collection("job");
 
-
-
-
-    app.post('/Addjob',async (req,res) =>{
+    app.post("/Addjob", async (req, res) => {
       const AddjobData = req.body;
       const result = await allAddjob.insertOne(AddjobData);
       res.send(result);
       // console.log(AddjobData);
+    });
 
-    })
-
-
-    app.get("/alljob/:id", async(req, res)=>{
+    app.put("/alljob/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedjobs = req.body;
+
+      const updatejobs = {
+        $set: {
+          Jobtitle: updatedjobs.Jobtitle,
+          date: updatedjobs.date,
+          select: updatedjobs.select,
+          Minimum: updatedjobs.Minimum,
+          Maximum: updatedjobs.Maximum,
+          Description: updatedjobs.Description,
+          Photo: updatedjobs.Photo,
+        },
+      };
+      const result = await allAddjob.updateOne(filter, updatejobs, options);
+      res.send(result);
+    });
+
+    app.get("/alljob/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
       const result = await allAddjob.findOne(query);
       res.send(result);
       console.log(result);
-    })
+    });
 
     app.get("/alljob", async (req, res) => {
       const cursor = allAddjob.find();
@@ -61,7 +73,6 @@ async function run() {
       }
       const result = await allAddjob.find(query).toArray();
       res.send(result);
-      
     });
 
     app.delete("/alljobs/:id", async (req, res) => {
@@ -70,7 +81,6 @@ async function run() {
       const result = await allAddjob.deleteOne(query);
       res.send(result);
     });
-
 
     await client.db("admin").command({ ping: 1 });
     console.log(
