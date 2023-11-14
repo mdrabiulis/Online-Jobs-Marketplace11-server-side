@@ -23,9 +23,6 @@ async function run() {
     const allAddjob = client.db("Addjob").collection("job");
     const bidjobs = client.db("Addjob").collection("bidjob");
 
-
-
-
     app.post("/bidjobs", async (req, res) => {
       const AddBidjobData = req.body;
       const result = await bidjobs.insertOne(AddBidjobData);
@@ -33,20 +30,21 @@ async function run() {
       // console.log(AddjobData);
     });
 
+    app.get("/bidjobs", async (req, res) => {
+      console.log(req.query);
+      let query = {};
+      if (req.query?.data?.email) {
+        query = { email: req.query?.data?.email };
+      }
+      const result = await bidjobs.find(query).toArray();
+      res.send(result);
+    });
 
 
 
 
-
-
-
-
-
-
-
-// All Job se======>>>>
-
-
+    
+    // All Job se======>>>>
 
     app.post("/Addjob", async (req, res) => {
       const AddjobData = req.body;
@@ -74,8 +72,6 @@ async function run() {
       const result = await allAddjob.updateOne(filter, updatejobs, options);
       res.send(result);
     });
-
-
 
     app.get("/alljob/:id", async (req, res) => {
       const id = req.params.id;
