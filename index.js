@@ -21,6 +21,32 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const allAddjob = client.db("Addjob").collection("job");
+    const bidjobs = client.db("Addjob").collection("bidjob");
+
+
+
+
+    app.post("/bidjobs", async (req, res) => {
+      const AddBidjobData = req.body;
+      const result = await bidjobs.insertOne(AddBidjobData);
+      res.send(result);
+      // console.log(AddjobData);
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+// All Job se======>>>>
+
+
 
     app.post("/Addjob", async (req, res) => {
       const AddjobData = req.body;
@@ -34,7 +60,6 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updatedjobs = req.body;
-
       const updatejobs = {
         $set: {
           Jobtitle: updatedjobs.Jobtitle,
@@ -50,12 +75,14 @@ async function run() {
       res.send(result);
     });
 
+
+
     app.get("/alljob/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await allAddjob.findOne(query);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
 
     app.get("/alljob", async (req, res) => {
