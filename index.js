@@ -30,20 +30,36 @@ async function run() {
       // console.log(AddjobData);
     });
 
+    app.get("/bidjobs/:id", async (req, res) => {
+      const id = req.params.id;
+      const find = { _id: new ObjectId(id) };
+      const result = await bidjobs.findOne(find);
+      res.send(result);
+    });
+
+    app.patch("/bidjobs/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedBooking = req.body;
+      console.log(updatedBooking);
+      const updateDoc = {
+        $set: {
+          status: updatedBooking.status,
+        },
+      };
+      const result = await bidjobs.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     app.get("/bidjobs", async (req, res) => {
-      console.log(req.query);
       let query = {};
-      if (req.query?.data?.email) {
-        query = { email: req.query?.data?.email };
+      if (req.query?.email) {
+        query = { email: req.query.email };
       }
       const result = await bidjobs.find(query).toArray();
       res.send(result);
     });
 
-
-
-
-    
     // All Job se======>>>>
 
     app.post("/Addjob", async (req, res) => {
