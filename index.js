@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [ "https://server-side-assignment-11.vercel.app","https://ornate-strudel-d64653.netlify.app"],
     credentials: true,
   })
 );
@@ -55,7 +55,6 @@ async function run() {
 
     app.post("/jwt", async (req, res) => {
       const user = req.body;
-      console.log(user);
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         // expiresIn: "2s",
         expiresIn: "1h",
@@ -64,7 +63,9 @@ async function run() {
       res
         .cookie("token", token, {
           httpOnly: true,
-          secure: false,
+          // secure: false,
+          secure: true,
+          sameSite: "none"
         })
         .send({ success: true });
     });
@@ -80,14 +81,14 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/bidjobs/:id",  async (req, res) => {
+    app.get("/bidjobs/:id", async (req, res) => {
       const id = req.params.id;
       const find = { _id: new ObjectId(id) };
       const result = await bidjobs.findOne(find);
       res.send(result);
     });
 
-    app.patch("/bidjobs/:id",  async (req, res) => {
+    app.patch("/bidjobs/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const updatedBooking = req.body;
@@ -118,7 +119,7 @@ async function run() {
       res.send(result);
     });
 
-    app.put("/alljob/:id",  async (req, res) => {
+    app.put("/alljob/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
@@ -138,7 +139,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/alljob/:id",  async (req, res) => {
+    app.get("/alljob/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await allAddjob.findOne(query);
@@ -164,7 +165,7 @@ async function run() {
       res.send(result);
     });
 
-    app.delete("/alljobs/:id", verifyCookies, async (req, res) => {
+    app.delete("/alljobs/:id",  async (req, res) => {
       const id = req.params.id;
 
       const query = { _id: new ObjectId(id) };
